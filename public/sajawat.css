@@ -1,0 +1,506 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+  html, body {
+  height: 100%;
+  width: 100%;
+  }
+  
+      /* CSS Custom Properties for Color Palette */
+      :root {
+        --primary-color: #4CAF50;
+        --secondary-color: #ff9800;
+        --background-color: #f0f2f5;
+        --card-bg: #ffffff;
+        --text-color: #333;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+      
+      * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f0f2f5, #e0e4e8);
+        color: var(--text-color);
+        user-select: none;
+      }
+      
+      h1, h2, h3, h5 {
+        margin: 5px;
+        font-size: 1.7vw;
+        /* padding: 10px; */
+      }
+      /* Fade transitions for section transitions */
+.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInAnimation 0.5s forwards;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button hover effects for the intro section */
+#intro button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+#intro button:hover {
+  background: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+      
+      /* Section containers */
+      .section {
+        display: none;
+        padding: 20px;
+        margin: 20px auto;
+        max-width: 94vw;
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+      }
+      
+      .active {
+        display: block;
+      }
+      
+      /* Input and buttons styling */
+      input, button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        margin: 5px 0;
+      }
+      
+      input {
+        width: 40%;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: border 0.3s;
+      }
+      
+      input:focus {
+        border-color: var(--primary-color);
+      }
+      
+      button {
+        cursor: pointer;
+        background: var(--primary-color);
+        color: #fff;
+        transition: background 0.3s, transform 0.2s;
+      }
+      
+      button:hover {
+        background: var(--secondary-color);
+        transform: scale(1.05);
+      }
+      
+      #intro h1{
+        font-size: 2.6vw;
+        text-align: center;
+         color: blue;
+      }
+      #intro h3{
+        
+         color: black;
+      }
+      #intro p,#intro li{
+        margin: 3px;
+        font-size: 1.3vw;
+      }
+      #intro img{
+        width: 100%;
+      }
+
+      /* Name Entry Section */
+      #nameEntry {
+        text-align: center;
+        margin-top: 100px;
+      }
+      .avatar-option {
+        width: 80px;
+        height: 80px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        margin: 5px;
+        cursor: pointer;
+        transition: border-color 0.3s;
+      }
+      
+      .avatar-option.active-avatar {
+        border-color: var(--primary-color);
+      }
+      
+      
+      /* the changes made*/
+      #game-image {
+        width: 100%;
+        max-width: 800px;
+        display: block;
+        margin: 0 auto;
+      }
+      /* Styles for the player cards in lobby */
+      .player-card {
+        padding: 10px;
+        transition: border 0.3s ease;
+        margin-bottom: 5px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+      }
+      /* Active highlight: add a green border */
+      .active-player {
+        border: 2px solid #0e7a0d;
+      }
+      /* Lobby Section */
+      #lobby {
+        text-align: center;
+      }
+      
+      #lobbyInfo {
+        margin-top: 20px;
+        padding: 20px;
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+      }
+      .lobby-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+      
+      .player-entry {
+        display: flex;
+        align-items: center;
+        padding: 8px !important;
+      }
+      #playersList div {
+        margin: 5px 0;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+      }
+      
+      #messages {
+        height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 10px;
+        background: #fff;
+        border-radius: 4px;
+      }
+      
+      .message {
+        margin: 5px 0;
+      }
+      
+      #countdownDisplay {
+        font-size: 2em;
+        color: var(--secondary-color);
+        margin-top: 20px;
+      }
+      
+      /* Game Section */
+      #gameSection {
+        height: 100vh;
+        padding: 0.1vw;
+        /* background: transparent;
+        background-size: 400% 400%;
+        animation: gradientAnimation 15s ease infinite; */
+      }
+      
+      /* @keyframes gradientAnimation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      } */
+      
+      #game-container {
+        display: flex;
+        /* flex-wrap: wrap; */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0px;
+      }
+      
+      #main-area {
+        flex: 1;
+        max-width: 600px;
+        /* background: var(--card-bg); */
+        margin: 0px;
+        padding: 0px;
+        border-radius: 8px;
+        /* box-shadow: 0 4px 8px var(--shadow-color); */
+        text-align: center;
+      }
+      
+      #section-info h1 {
+        font-size: 24px;
+        margin-bottom: 0px;
+      }
+      
+      #image-container {
+        position: relative;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+      }
+      
+      #image-container img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+        border-radius: 8px;
+        transition: opacity 0.5s ease;
+      }
+      
+      #curtain {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        border-radius: 8px;
+        transition: opacity 0.5s ease;
+      }
+      
+      #curtain button {
+        background: var(--primary-color);
+        border: none;
+        color: #fff;
+        margin-top: 15px;
+      }
+      
+      #controls {
+        margin: 15px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      #controls button {
+        margin: 0 5px;
+      }
+      
+      #timer {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      
+      #answer-text {
+        font-size: 18px;
+        margin-top: 10px;
+      }
+      
+      #submissionsContainer {
+        margin-top: 10px;
+        padding: 15px;
+        background: #f7f7f7;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      
+      #notification {
+        margin-top: 10px;
+        color: var(--secondary-color);
+        font-weight: bold;
+      }
+      
+      #nextSectionBtn {
+        display: none;
+        margin: 10px auto;
+      }
+      
+      #answerSubmission {
+        display: none;
+        margin-top: 15px;
+      }
+      
+      #answerSubmission input {
+        width: 60%;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+      }
+      
+      /* Left Column: Referee & Player Scores */
+      #left-column {
+        width: 250px;
+        margin: 10px;
+        position: fixed;
+        left: 3%;
+        bottom: 30%;
+      }
+      #right-column {
+        width: 250px;
+        margin: 10px;
+        position: fixed;
+          right: 3%;
+          bottom: 30%;
+      }
+      
+      #referee-card {
+         
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        text-align: center;
+      }
+      
+      .referee-photo {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 5px;
+      }
+      
+      .referee-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      
+      @keyframes refereeBounce {
+        0% { transform: scale(0.1); opacity: 0; }
+        60% { transform: scale(1.2); opacity: 1; }
+        100% { transform: scale(1); }
+      }
+      
+      .animate-referee {
+        animation: refereeBounce 0.8s ease;
+      }
+      
+      #players-container {
+        margin-top: 10px;
+      }
+      
+      .player-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+      }
+      
+      .left-side {
+        display: flex;
+        align-items: center;
+      }
+      
+      .player-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+      }
+      
+      .player-name {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      
+      .right-side {
+        display: flex;
+        align-items: center;
+      }
+      
+      .score-value {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      
+      #leaderboard {
+        width: 90%;
+        margin: 20px auto;
+        text-align: center;
+      }
+      
+      #leaderboard h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      
+      #leaderboard table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      #leaderboard th, #leaderboard td {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+      
+      #leaderboard th {
+        background: var(--primary-color);
+        color: #fff;
+      }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        #game-container {
+          flex-direction: column;
+          align-items: center;
+        }
+      
+        #left-column {
+          width: 100%;
+        }
+      
+        #main-area {
+          width: 90%;
+        }
+      }
+  

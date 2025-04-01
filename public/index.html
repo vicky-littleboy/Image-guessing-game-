@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multiplayer Lobby with Guessing Game</title>
+  <!-- Google Font for a modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sajawat.css">
+</head>
+<body>
+  <div id="intro" class="section active">
+    <img src="avatars/scoopcast_banner.jpg" alt="">
+    <h1>Welcome to the official game of Scoopcast</h1>
+    <h3>Words of Developer</h3>
+    <p>Hi, my name is Vicky and I made this version of game (inspired by Parth and Daksha)</p>
+    <p>I hope you enjoy playing this game & feel free to give your opinions or suggestions</p>
+    <br>
+    <h3>Game Content & rules</h3>
+    <p>This is a realtime multiplayer game which means-</p>
+    <br>
+    <ul>
+        <li>all 4 players' participance is necessary.</li>
+        <li>One of you has to create a room and others will join via a room id</li>
+        <li>when all four players have joined host will spin the wheel to choose a referee</li>
+        <li>after referee selection host can start the game</li>
+        <li>referee will have controls of the game and judges the answers submitted by all the players</li>
+        <li>Each player will have 20 seconds to submit their answer when rounds start</li>
+        <li>for the long names players can submit short forms (eg. for Lord of the rings : the fellowship of the ring write LOTR 1)</li>
+        <li>referee will reveal the answer after all players have submitted their answers</li>
+        <li>Points will be awarded based on the speed of submission of the answer 100>>50>>20>>10 </li>
+    </ul>
+    <button onclick="mainPage()">Lets Play</button>
+  </div>
+  <!-- Name Entry Section -->
+  <div id="nameEntry" class="section">
+    <h2>Enter Your Name</h2>
+    <input type="text" id="playerName" placeholder="Your name">
+    <div id="avatarSelection">
+      <h3>Select Your Avatar</h3>
+      <div id="avatarOptions">
+        <img src="/avatars/avatar1.jpg" alt="Avatar 1" class="avatar-option" onclick="selectAvatar(this)">
+        <img src="/avatars/avatar2.jpg" alt="Avatar 2" class="avatar-option" onclick="selectAvatar(this)">
+        <img src="/avatars/avatar3.jpg" alt="Avatar 3" class="avatar-option" onclick="selectAvatar(this)">
+        <img src="/avatars/avatar4.jpg" alt="Avatar 4" class="avatar-option" onclick="selectAvatar(this)">
+      </div>
+    </div>
+    <br>
+    <button onclick="submitName()">Continue</button>
+  </div>
+
+  <!-- Lobby Section -->
+  <div id="lobby" class="section">
+    <h2>Lobby</h2>
+    <div id="roomControls">
+      <button onclick="createRoom()">Create New Room</button>
+      <br><br>
+      <input type="text" id="roomId" placeholder="Room ID">
+      <button onclick="joinRoom()">Join Room</button>
+    </div>
+    <!-- Lobby Content -->
+    <div id="lobbyContent" style="display: flex; flex-direction: row; justify-content: space-between;">
+      <div id="lobbyLeft" style="flex: 1; padding: 10px; max-width: 50%;">
+        <div id="lobbyInfo">
+          <h3>
+            Room: <span id="roomIdDisplay"></span>
+            <button id="copyRoomIdBtn" onclick="copyRoomId()">Copy</button>
+          </h3>
+          <div id="playersList"></div>
+          <!-- Spin Wheel Button placed for lobby (host only) -->
+          <button id="spinWheelBtn" style="display:none;" onclick="spinWheel()">Spin Wheel to Choose Referee</button>
+          <button id="startGameBtn" style="display: none;" onclick="startGame()">Start Game (Host Only)</button>
+          <div id="countdownDisplay"></div>
+        </div>
+      </div>
+      <div id="lobbyRight" style="flex: 1; padding: 10px; max-width: 50%; border-left: 1px solid #ddd;">
+        <div id="chatContainer">
+          <div id="messages" style="height: 70vh; overflow-y: auto; background: #fff; padding: 10px; border-radius: 4px;"></div>
+          <input type="text" id="messageInput" placeholder="Type your message" style="width: 80%;">
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Section -->
+  <div id="gameSection" class="section" style="position: relative;">
+    
+    <div id="game-container">
+      <div id="section-info">
+        <h1>Section 1 of <span id="totalSections"></span>: Guess the Frame</h1>
+      </div>
+      <div id="main-area">
+        <div id="image-container">
+          <img id="game-image" src="" alt="Game Image" data-answer="" data-answerImage="" onerror="console.error('Failed to load image:', this.src)">
+          <div id="curtain">
+            <h2>Get Ready!</h2>
+            <p>When the referee clicks Start, the image will be revealed and the timer will begin.</p>
+            <button id="startBtn">Start</button>
+          </div>
+        </div>
+        <div id="answer-text"></div>
+        <div id="answerSubmission">
+          <input type="text" id="answerInput" placeholder="Enter your answer">
+          <button id="submitAnswerBtn" onclick="submitAnswer()">Submit Answer</button>
+        </div>
+        <div id="controls">
+          <button id="prevBtn">Previous</button>
+          <button id="revealBtn" onclick="emitRevealAnswer()">Reveal Answer</button>
+          <button id="nextBtn">Next</button>
+        </div>
+        <div id="timer">20</div>
+        <div id="notification"></div>
+        <!-- This button will dynamically be set as either Next Section or Reveal Winner -->
+        <button id="nextSectionBtn" style="display:none;"></button>
+      </div>
+      <div id="left-column">
+        <!-- Reintroduced referee card in game section -->
+        <div id="referee-card">
+          <h5>The referee is</h5>
+          <img id="referee-photo" class="referee-photo">
+          <div id="referee-name" class="referee-name"></div>
+        </div>
+        <div id="submissionsContainer"></div>
+      </div>
+      <div id="right-column">
+        <div id="players-container"></div>
+        <!-- Moved Spin Wheel Button for game section here (below players container) -->
+        <button id="spinWheelGameBtn" style="display:none;" onclick="spinWheelGame()">Spin Wheel to Choose New Referee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: Socket.io, confetti, and game logic -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    /******** Global Variables ********/
+    const socket = io();
+    let localSocketId = null;
+    let playerName = null;
+    let currentRoom = null;
+    let selectedAvatar = null;
+    let isHost = false;
+    let currentRefereeId = null;  // Referee's socket id.
+    window.lobbyPlayers = [];
+    let players = [];
+    
+    // Sections: each object holds a title and an array of rounds (images)
+    const sections = [
+      {
+        title: "Guess the Frame of Foreign Movies",
+        images: [
+          { src: "frames/s1f1.jpg", answer: "S1A1", answerImage: "frames/s1a1.jpg" },
+          { src: "frames/s1f2.jpg", answer: "S1A2", answerImage: "frames/s1a2.jpg" },
+          { src: "frames/s1f3.jpg", answer: "S1A3", answerImage: "frames/s1a3.jpg" },
+          { src: "frames/s1f4.jpg", answer: "S1A4", answerImage: "frames/s1a4.jpg" },
+          { src: "frames/s1f5.jpg", answer: "S1A5", answerImage: "frames/s1a5.jpg" },
+          { src: "frames/s1f6.jpg", answer: "S1A6", answerImage: "frames/s1a6.jpg" },
+          { src: "frames/s1f7.jpg", answer: "S1A7", answerImage: "frames/s1a7.jpg" },
+          { src: "frames/s1f8.jpg", answer: "S1A8", answerImage: "frames/s1a8.jpg" }
+        ]
+      },
+      {
+        title: "Guess the Frame of Indian Movies",
+        images: [
+          { src: "frames/s2f1.jpg", answer: "S2A1", answerImage: "frames/s2a1.jpg" },
+          { src: "frames/s2f2.jpg", answer: "S2A2", answerImage: "frames/s2a2.jpg" },
+          { src: "frames/s2f3.jpg", answer: "S2A3", answerImage: "frames/s2a3.jpg" },
+          { src: "frames/s2f4.jpg", answer: "S2A4", answerImage: "frames/s2a4.jpg" },
+          { src: "frames/s2f5.jpg", answer: "S2A5", answerImage: "frames/s2a5.jpg" },
+          { src: "frames/s2f6.jpg", answer: "S2A6", answerImage: "frames/s2a6.jpg" },
+          { src: "frames/s2f7.jpg", answer: "S2A7", answerImage: "frames/s2a7.jpg" },
+          { src: "frames/s2f8.jpg", answer: "S2A8", answerImage: "frames/s2a8.jpg" }
+        ]
+      },
+      {
+        title: "Section 3",
+        images: [
+          { src: "frames/s3f1.jpg", answer: "S3A1", answerImage: "frames/s3a1.jpg" },
+          { src: "frames/s3f2.jpg", answer: "S3A2", answerImage: "frames/s3a2.jpg" },
+          { src: "frames/s3f3.jpg", answer: "S3A3", answerImage: "frames/s3a3.jpg" },
+          { src: "frames/s3f4.jpg", answer: "S3A4", answerImage: "frames/s3a4.jpg" },
+          { src: "frames/s3f5.jpg", answer: "S3A5", answerImage: "frames/s3a5.jpg" },
+          { src: "frames/s3f6.jpg", answer: "S3A6", answerImage: "frames/s3a6.jpg" },
+          { src: "frames/s3f7.jpg", answer: "S3A7", answerImage: "frames/s3a7.jpg" },
+          { src: "frames/s3f8.jpg", answer: "S3A8", answerImage: "frames/s3a8.jpg" }
+        ]
+      },
+      {
+        title: "Section 4",
+        images: [
+          { src: "frames/s4f1.jpg", answer: "S4A1", answerImage: "frames/s4a1.jpg" },
+          { src: "frames/s4f2.jpg", answer: "S4A2", answerImage: "frames/s4a2.jpg" },
+          { src: "frames/s4f3.jpg", answer: "S4A3", answerImage: "frames/s4a3.jpg" },
+          { src: "frames/s4f4.jpg", answer: "S4A4", answerImage: "frames/s4a4.jpg" },
+          { src: "frames/s4f5.jpg", answer: "S4A5", answerImage: "frames/s4a5.jpg" },
+          { src: "frames/s4f6.jpg", answer: "S4A6", answerImage: "frames/s4a6.jpg" },
+          { src: "frames/s4f7.jpg", answer: "S4A7", answerImage: "frames/s4a7.jpg" },
+          { src: "frames/s4f8.jpg", answer: "S4A8", answerImage: "frames/s4a8.jpg" }
+        ]
+      }
+    ];
+    
+    let currentSectionIndex = 0;
+    let currentImageIndex = 0;
+    let timer = 20;
+    let timerInterval = null;
+    
+    /******** Socket Connection ********/
+    socket.on('connect', () => {
+      localSocketId = socket.id;
+      console.log("Connected with ID:", localSocketId);
+    });
+    
+    /******** Name and Avatar Entry ********/
+    function selectAvatar(el) {
+      Array.from(document.getElementsByClassName('avatar-option')).forEach(a => a.classList.remove('active-avatar'));
+      selectedAvatar = el.src;
+      el.classList.add('active-avatar');
+    }
+    
+    function submitName() {
+      const name = document.getElementById('playerName').value.trim();
+      if (name && selectedAvatar) {
+        playerName = name;
+        document.getElementById('nameEntry').style.display = 'none';
+        document.getElementById('lobby').classList.add('active');
+      } else {
+        alert("Please enter your name and select an avatar.");
+      }
+    }
+    
+    /******** Lobby Functions ********/
+    function createRoom() {
+      socket.emit('createRoom', { name: playerName, avatar: selectedAvatar });
+      document.getElementById('roomControls').style.display = 'none';
+    }
+    
+    function joinRoom() {
+      const roomId = document.getElementById('roomId').value.trim();
+      if (!roomId) return;
+      socket.emit('joinRoom', { name: playerName, roomId: roomId, avatar: selectedAvatar });
+      currentRoom = roomId;
+      document.getElementById('roomControls').style.display = 'none';
+      document.getElementById('roomIdDisplay').textContent = roomId;
+    }
+    
+    function copyRoomId() {
+      const roomId = document.getElementById('roomIdDisplay').textContent;
+      navigator.clipboard.writeText(roomId)
+        .then(() => alert('Room ID copied!'))
+        .catch(() => alert('Copy failed.'));
+    }
+    
+    function showLobby() {
+      document.getElementById('lobbyInfo').style.display = 'block';
+    }
+    
+    // Updated updateLobbyPlayers to display player cards with role labels.
+    function updateLobbyPlayers(list) {
+      window.lobbyPlayers = list;
+      let html = '<h3>Players in Room:</h3>';
+      html += list.map((p, index) => {
+        let role = '';
+        if (p.isHost) role += '(Host) ';
+        if (p.id === currentRefereeId) role += '(Referee)';
+        return `<div class="player-card" data-index="${index}">
+                  <img src="${p.avatar}" class="player-photo" alt="${p.name}">
+                  <span class="player-name">${p.name}</span>
+                  <span class="role-label">${role}</span>
+                </div>`;
+      }).join('');
+      document.getElementById('playersList').innerHTML = html;
+      if (isHost && list.length === 4) {
+        document.getElementById("spinWheelBtn").style.display = "inline-block";
+      }
+      renderGamePlayers(list);
+    }
+    
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      if (input.value.trim()) {
+        socket.emit('sendMessage', input.value.trim());
+        input.value = '';
+      }
+    }
+    
+    function addMessage(n, m) {
+      const div = document.getElementById('messages');
+      div.innerHTML += `<div class="message"><strong>${n}:</strong> ${m}</div>`;
+      div.scrollTop = div.scrollHeight;
+    }
+    
+    function startGame() {
+      socket.emit('startGame');
+    }
+    
+    /******** Socket Event Listeners ********/
+    socket.on('roomCreated', (roomId) => {
+      currentRoom = roomId;
+      document.getElementById('roomIdDisplay').textContent = roomId;
+      showLobby();
+      document.getElementById('startGameBtn').style.display = 'block';
+      isHost = true;
+    });
+    
+    socket.on('playerJoined', (list) => { updateLobbyPlayers(list); });
+    socket.on('newMessage', data => { addMessage(data.name, data.message); });
+    socket.on('countdown', num => { document.getElementById('countdownDisplay').textContent = `Game starts in ${num}...`; });
+    
+    socket.on('gameStarting', () => {
+      document.getElementById('lobby').classList.remove('active');
+      document.getElementById('gameSection').classList.add('active');
+      document.getElementById("totalSections").innerText = sections.length;
+      initGame();
+    });
+    
+    // When referee is set, update lobby players and referee card in game section.
+    socket.on('setReferee', data => {
+      currentRefereeId = data.refereeId;
+      updateControlAvailability();
+      updateLobbyPlayers(window.lobbyPlayers);
+      const ref = window.lobbyPlayers.find(p => p.id === currentRefereeId);
+      if(ref){
+        document.getElementById("referee-photo").src = ref.avatar;
+        document.getElementById("referee-name").textContent = ref.name;
+      }
+    });
+    
+    socket.on('endGame', data => {
+      players = data;
+      endGame();
+    });
+    
+    socket.on('startImage', () => {
+      document.getElementById("curtain").style.display = "none";
+      document.getElementById("answerSubmission").style.display = "block";
+      startTimer();
+    });
+    
+    socket.on('prevImageControl', () => { prevImage(); });
+    socket.on('nextImageControl', () => { nextImage(); });
+    socket.on('revealAnswerControl', () => { revealAnswer(); });
+    socket.on('revealAnswers', data => { displaySubmissions(data); });
+    socket.on('scoreUpdated', data => { players = data; renderGamePlayers(data); });
+    
+    socket.on("nextSection", () => {
+      nextSection();
+      // At the end of the section, if the current client is the referee,
+      // show the spin wheel button for new referee selection.
+      if(localSocketId === currentRefereeId){
+        document.getElementById("spinWheelGameBtn").style.display = "block";
+      }
+    });
+    
+    // Updated: show the spin button only when the section has ended (last image)
+    function updateControlAvailability() {
+      const controlIds = ["startBtn", "prevBtn", "nextBtn", "revealBtn"];
+      controlIds.forEach(id => {
+        document.getElementById(id).style.display = (localSocketId === currentRefereeId) ? "block" : "none";
+      });
+      // Only show the spin wheel button in the game section if:
+      // 1. The current client is the referee.
+      // 2. The current image is the last in the section.
+      const sec = sections[currentSectionIndex];
+      if (localSocketId === currentRefereeId && currentImageIndex >= sec.images.length - 1) {
+        document.getElementById("spinWheelGameBtn").style.display = "block";
+      } else {
+        document.getElementById("spinWheelGameBtn").style.display = "none";
+      }
+      
+      let nsBtn = document.getElementById("nextSectionBtn");
+      if (currentImageIndex >= sec.images.length - 1 && localSocketId === currentRefereeId) {
+        nsBtn.style.display = "block";
+        if (currentSectionIndex < sections.length - 1) {
+          nsBtn.innerText = "Next Section";
+          nsBtn.onclick = function() {
+            socket.emit("nextSection");
+          };
+        } else {
+          nsBtn.innerText = "Reveal Winner";
+          nsBtn.onclick = function() {
+            socket.emit("endGame");
+            nsBtn.disabled = true;
+          };
+        }
+      } else {
+        nsBtn.style.display = "none";
+      }
+    }
+    
+    function nextImage() {
+      const sec = sections[currentSectionIndex];
+      if (currentImageIndex < sec.images.length - 1) {
+        currentImageIndex++;
+        showImage();
+        prepareForNewImage();
+      } else {
+        document.getElementById("notification").innerText = "End of section.";
+        updateControlAvailability();
+      }
+    }
+    
+    function nextSection() {
+      if (currentSectionIndex < sections.length - 1) {
+        currentSectionIndex++;
+        currentImageIndex = 0;
+        updateSectionInfo();
+        showImage();
+        prepareForNewImage();
+        updateControlAvailability();
+      }
+    }
+    
+    function updateSectionInfo() {
+      const sec = sections[currentSectionIndex];
+      document.getElementById("section-info").innerHTML = `<h1>Section ${currentSectionIndex + 1} of ${sections.length}: ${sec.title}</h1>`;
+    }
+    
+    function showImage() {
+      const sec = sections[currentSectionIndex];
+      const imgObj = sec.images[currentImageIndex];
+      const gameImg = document.getElementById("game-image");
+      gameImg.src = imgObj.src;
+      gameImg.dataset.answer = imgObj.answer;
+      gameImg.dataset.answerImage = imgObj.answerImage;
+      console.log("Displaying image:", imgObj.src);
+      document.getElementById("answer-text").innerText = "";
+      document.getElementById("notification").innerText = "";
+    }
+    
+    function prepareForNewImage() {
+      if (timerInterval) clearInterval(timerInterval);
+      timer = 20;
+      updateTimerDisplay();
+      document.getElementById("notification").innerText = "";
+      document.getElementById("curtain").style.display = "flex";
+      document.getElementById("answerSubmission").style.display = "none";
+      document.getElementById("answerInput").value = "";
+      document.getElementById("answerInput").disabled = false;
+      document.getElementById("submissionsContainer").innerHTML = "";
+    }
+    
+    function updateTimerDisplay() {
+      document.getElementById("timer").innerText = timer;
+    }
+    
+    function startTimer() {
+      timer = 20;
+      updateTimerDisplay();
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer--;
+        updateTimerDisplay();
+        if (timer <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("notification").innerText = "Time's up!";
+        }
+      }, 1000);
+    }
+    
+    function revealAnswer() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      const gameImg = document.getElementById("game-image");
+      gameImg.src = gameImg.dataset.answerImage;
+      document.getElementById("answer-text").innerText = "Answer: " + gameImg.dataset.answer;
+    }
+    
+    function renderGamePlayers(list) {
+      const container = document.getElementById("players-container");
+      container.innerHTML = "";
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.classList.add("player-card");
+        card.innerHTML = `<div class="left-side">
+            <img src="${p.avatar}" alt="${p.name}" class="player-photo">
+            <div class="player-name">${p.name}</div>
+          </div>
+          <div class="right-side">
+            <span class="score-value">${p.score}</span>
+          </div>`;
+        container.appendChild(card);
+      });
+    }
+    
+    function submitAnswer() {
+      const ans = document.getElementById("answerInput").value.trim();
+      if (ans) {
+        socket.emit('submitAnswer', { answer: ans });
+        document.getElementById("answerInput").disabled = true;
+        document.getElementById("notification").innerText = "Answer submitted!";
+      } else {
+        document.getElementById("notification").innerText = "Please enter an answer.";
+      }
+    }
+    
+    function emitRevealAnswer() {
+      if (localSocketId !== currentRefereeId) {
+        alert("Only the referee can reveal answers.");
+        return;
+      }
+      socket.emit("revealAnswerControl");
+    }
+    
+    function displaySubmissions(data) {
+      const cont = document.getElementById("submissionsContainer");
+      cont.innerHTML = "<h3>Submissions:</h3>";
+      if (data && Object.keys(data).length > 0) {
+        const subs = Object.keys(data).map(id => ({ id, ...data[id] }));
+        subs.sort((a, b) => a.time - b.time);
+        subs.forEach((s, i) => {
+          cont.innerHTML += `<div>${i+1}. ${s.name}: ${s.answer} ${localSocketId === currentRefereeId ? `<input type="checkbox" class="correct-checkbox" data-id="${s.id}">` : ""}</div>`;
+        });
+        if (localSocketId === currentRefereeId) {
+          cont.innerHTML += `<button id="submitCorrectBtn">Submit Correct Answers</button>`;
+        }
+      } else {
+        cont.innerHTML += "<div>No submissions received.</div>";
+      }
+    }
+    
+    document.getElementById("submissionsContainer").addEventListener("click", (evt) => {
+      if (evt.target.id === "submitCorrectBtn") {
+        const cbs = document.querySelectorAll(".correct-checkbox:checked");
+        const ids = Array.from(cbs).map(cb => cb.getAttribute("data-id"));
+        if (ids.length > 0) {
+          socket.emit("markAnswersCorrect", ids);
+          document.getElementById("notification").innerText = "Correct answers submitted!";
+          evt.target.disabled = true;
+        } else {
+          alert("Select at least one correct answer.");
+        }
+      }
+    });
+    
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (localSocketId === currentRefereeId) socket.emit("prevImageControl");
+    });
+    
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (localSocketId === currentRefereeId) socket.emit("nextImageControl");
+    });
+    
+    document.getElementById("startBtn").addEventListener("click", () => {
+      if (localSocketId === currentRefereeId) socket.emit("startImage");
+    });
+    
+    /******** Spin Wheel for Random Referee Selection ********/
+    function spinWheel() {
+      // Hide the spin wheel button immediately
+      document.getElementById("spinWheelBtn").style.display = "none";
+      const playerCards = document.querySelectorAll('#playersList .player-card');
+      if (playerCards.length === 0) return;
+      
+      let activeIndex = 0;
+      const intervalSpeed = 100; // in ms
+      const spinDuration = 3000; // total spin duration in ms
+      
+      function updateActive() {
+        playerCards.forEach(card => card.classList.remove('active-player'));
+        playerCards[activeIndex].classList.add('active-player');
+      }
+      
+      let spinInterval = setInterval(() => {
+        activeIndex = (activeIndex + 1) % playerCards.length;
+        updateActive();
+      }, intervalSpeed);
+      
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        let randomIndex = Math.floor(Math.random() * playerCards.length);
+        activeIndex = randomIndex;
+        updateActive();
+        const chosenPlayer = window.lobbyPlayers[activeIndex];
+        console.log("Selected referee:", chosenPlayer.name, chosenPlayer.id);
+        socket.emit("chooseReferee");
+      }, spinDuration);
+    }
+    
+    // Spin wheel function for game section referee selection
+    function spinWheelGame() {
+      document.getElementById("spinWheelGameBtn").style.display = "none";
+      const playerCards = document.querySelectorAll('#players-container .player-card');
+      if (playerCards.length === 0) return;
+      
+      let activeIndex = 0;
+      const intervalSpeed = 100;
+      const spinDuration = 3000;
+      
+      function updateActive() {
+        playerCards.forEach(card => card.classList.remove('active-player'));
+        playerCards[activeIndex].classList.add('active-player');
+      }
+      
+      let spinInterval = setInterval(() => {
+        activeIndex = (activeIndex + 1) % playerCards.length;
+        updateActive();
+      }, intervalSpeed);
+      
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        let randomIndex = Math.floor(Math.random() * playerCards.length);
+        activeIndex = randomIndex;
+        updateActive();
+        const chosenPlayer = window.lobbyPlayers[activeIndex];
+        console.log("Selected referee (game section):", chosenPlayer.name, chosenPlayer.id);
+        socket.emit("chooseReferee");
+      }, spinDuration);
+    }
+    
+    function endGame() {
+      if (timerInterval) clearInterval(timerInterval);
+      const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+      const highestScore = sortedPlayers[0].score;
+      const winners = sortedPlayers.filter(player => player.score === highestScore);
+      winners.forEach(player => {
+        player.winCount++;
+        localStorage.setItem("winCount_" + player.name, player.winCount);
+      });
+      let leaderboardHTML = "<h2>Leaderboard</h2>";
+      leaderboardHTML += "<table>";
+      leaderboardHTML += "<tr><th>Rank</th><th>Player</th><th>Score</th><th>Win Count</th></tr>";
+      sortedPlayers.forEach((player, index) => {
+        leaderboardHTML += `<tr>
+          <td>${index + 1}</td>
+          <td><img src="${player.avatar}" alt="${player.name}" style="width:30px;height:30px;border-radius:50%;"> ${player.name}</td>
+          <td>${player.score}</td>
+          <td>${player.winCount}</td>
+        </tr>`;
+      });
+      leaderboardHTML += "</table>";
+      let winnerMessage = "";
+      if (winners.length === 1) {
+        winnerMessage = `<h2>Winner: ${winners[0].name}!</h2>`;
+      } else {
+        winnerMessage = `<h2>It's a tie between: ${winners.map(p => p.name).join(", ")}!</h2>`;
+      }
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      document.getElementById("game-container").innerHTML =
+        `<div id="leaderboard">
+          ${winnerMessage}
+          ${leaderboardHTML}
+        </div>`;
+    }
+    
+    function initGame() {
+      if (window.lobbyPlayers && window.lobbyPlayers.length > 0) {
+        players = window.lobbyPlayers.map(p => ({
+          id: p.id,
+          name: p.name,
+          avatar: p.avatar,
+          score: p.score || 0,
+          winCount: p.winCount || 0
+        }));
+      } else {
+        players = [];
+      }
+      currentSectionIndex = 0;
+      currentImageIndex = 0;
+      timer = 20;
+      updateSectionInfo();
+      showImage();
+      prepareForNewImage();
+      renderGamePlayers(players);
+      updateControlAvailability();
+    }
+    
+    function mainPage() {
+      const introSection = document.getElementById('intro');
+      introSection.classList.add('fade-out');
+      setTimeout(() => {
+        introSection.style.display = 'none';
+        const nameEntry = document.getElementById('nameEntry');
+        nameEntry.style.display = 'block';
+        nameEntry.classList.add('fade-in');
+      }, 500);
+    }
+
+    
+  </script>
+</body>
+</html>
