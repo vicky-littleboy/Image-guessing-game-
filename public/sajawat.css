@@ -6,6 +6,7 @@
   html, body {
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
   }
   
       /* CSS Custom Properties for Color Palette */
@@ -81,9 +82,9 @@
       /* Section containers */
       .section {
         display: none;
-        padding: 20px;
-        margin: 20px auto;
-        max-width: 94vw;
+        padding: 10px;
+        /* margin: 20px auto;
+        max-width: 94vw; */
         background: var(--card-bg);
         border-radius: 8px;
         box-shadow: 0 4px 8px var(--shadow-color);
@@ -144,8 +145,33 @@
 
       /* Name Entry Section */
       #nameEntry {
+        background-image: url(https://i.ytimg.com/vi/DiuHnibpXnM/maxresdefault.jpg);
+       
+        position: relative;
+        height: 100%;
+        width: 100%;
         text-align: center;
-        margin-top: 100px;
+        /* margin-top: 100px; */
+        /* display: flex;
+        align-items: center;
+        justify-content: center; */
+      }
+      .namemain{
+        width: 40%;
+        height: 80%;
+        padding: 50px 10px;
+       background-color: #ffffff92;
+       backdrop-filter: blur(10px);
+       border: 2px solid #ffff;
+       border-radius: 5%;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .namemain input{
+        width: 70%;
       }
       .avatar-option {
         width: 80px;
@@ -236,43 +262,29 @@
       
       /* Game Section */
       #gameSection {
-        height: 100vh;
-        padding: 0.1vw;
-        /* background: transparent;
-        background-size: 400% 400%;
-        animation: gradientAnimation 15s ease infinite; */
+        width: 100vw;
+        height: 100%;
+        padding: 1vw;
       }
       
-      /* @keyframes gradientAnimation {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      } */
+
       
       #game-container {
         display: flex;
-        /* flex-wrap: wrap; */
-        flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        padding: 0px;
+        gap: 10px;
+        padding: 10px;
       }
       
       #main-area {
         flex: 1;
-        max-width: 600px;
-        /* background: var(--card-bg); */
+        max-width: 700px;
         margin: 0px;
         padding: 0px;
         border-radius: 8px;
-        /* box-shadow: 0 4px 8px var(--shadow-color); */
         text-align: center;
+        /* width: 100%; */
       }
       
       #section-info h1 {
@@ -284,12 +296,15 @@
         position: relative;
         margin-bottom: 15px;
         box-shadow: 0 4px 8px var(--shadow-color);
+        width: 100%;
+        aspect-ratio: 16/9;
       }
       
       #image-container img {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16/9;
+       object-fit: contain;
+        /* max-width: 600px; */
+        height: 100%;
+        /* aspect-ratio: 16/9; */
         border-radius: 8px;
         transition: opacity 0.5s ease;
       }
@@ -300,7 +315,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.85);
+        background: rgb(0, 0, 0);
         color: #fff;
         display: flex;
         flex-direction: column;
@@ -371,20 +386,26 @@
       }
       
       /* Left Column: Referee & Player Scores */
-      #left-column {
-        width: 250px;
+      /* #left-column {
+        width: 15vw;
         margin: 10px;
-        position: fixed;
-        left: 3%;
-        bottom: 30%;
+        
+        flex: 1;
+        max-width: 20%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
       #right-column {
-        width: 250px;
+        width: 15vw;
         margin: 10px;
-        position: fixed;
-          right: 3%;
-          bottom: 30%;
-      }
+        
+          flex: 1;
+          max-width: 20%;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+      } */
       
       #referee-card {
          
@@ -421,6 +442,9 @@
       
       #players-container {
         margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
       
       .player-card {
@@ -461,7 +485,12 @@
         font-size: 18px;
         font-weight: 600;
       }
-      
+      #leaderboard-wrapper {
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        width:100%;
+      }
       #leaderboard {
         width: 90%;
         margin: 20px auto;
@@ -488,6 +517,22 @@
         color: #fff;
       }
       
+      #extra-content{
+        display: flex; 
+        gap:15vw;
+        margin-top: 20px;
+      }
+      #payment{
+        width: 20vw; height: 20vw; 
+        background: #f0f0f0;
+        border-radius: 8px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
       /* Responsive Design */
       @media (max-width: 768px) {
         #game-container {
@@ -503,4 +548,61 @@
           width: 90%;
         }
       }
-  
+      
+      /* Game Section Layout */
+      #game-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
+      }
+      
+      /* Left Column */
+      #left-column {
+        flex: 1;
+        max-width: 15vw;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      /* Center Column */
+      #center-column {
+        flex: 2;
+        max-width: 55vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      
+      /* Right Column */
+      #right-column {
+        flex: 1;
+        max-width: 15vw;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      /* Main Area */
+      #main-area {
+        width: 100%;
+        text-align: center;
+      }
+      
+      /* Image Container */
+      #image-container {
+        width: 100%;
+        aspect-ratio: 16/9;
+        position: relative;
+        box-shadow: 0 4px 8px var(--shadow-color);
+      }
+      
+      /* Players Container */
+      #players-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }

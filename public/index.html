@@ -13,9 +13,9 @@
     <h1>Welcome to the official game of Scoopcast</h1>
     <h3>Words of Developer</h3>
     <p>Hi, my name is Vicky and I made this version of game (inspired by Parth and Daksha)</p>
-    <p>I hope you enjoy playing this game & feel free to give your opinions or suggestions</p>
+    <p>I hope you enjoy playing this game &amp; feel free to give your opinions or suggestions</p>
     <br>
-    <h3>Game Content & rules</h3>
+    <h3>Game Content &amp; rules</h3>
     <p>This is a realtime multiplayer game which means-</p>
     <br>
     <ul>
@@ -27,13 +27,14 @@
         <li>Each player will have 20 seconds to submit their answer when rounds start</li>
         <li>for the long names players can submit short forms (eg. for Lord of the rings : the fellowship of the ring write LOTR 1)</li>
         <li>referee will reveal the answer after all players have submitted their answers</li>
-        <li>Points will be awarded based on the speed of submission of the answer 100>>50>>20>>10 </li>
+        <li>Points will be awarded based on the speed of submission of the answer 100&gt;&gt;50&gt;&gt;20&gt;&gt;10 </li>
     </ul>
     <button onclick="mainPage()">Lets Play</button>
   </div>
   <!-- Name Entry Section -->
   <div id="nameEntry" class="section">
-    <h2>Enter Your Name</h2>
+    <div class="namemain">
+      <h2>Enter Your Name</h2>
     <input type="text" id="playerName" placeholder="Your name">
     <div id="avatarSelection">
       <h3>Select Your Avatar</h3>
@@ -46,6 +47,7 @@
     </div>
     <br>
     <button onclick="submitName()">Continue</button>
+    </div>
   </div>
 
   <!-- Lobby Section -->
@@ -66,7 +68,7 @@
             <button id="copyRoomIdBtn" onclick="copyRoomId()">Copy</button>
           </h3>
           <div id="playersList"></div>
-          <!-- Spin Wheel Button placed for lobby (host only) -->
+          <!-- Spin Wheel Button for host -->
           <button id="spinWheelBtn" style="display:none;" onclick="spinWheel()">Spin Wheel to Choose Referee</button>
           <button id="startGameBtn" style="display: none;" onclick="startGame()">Start Game (Host Only)</button>
           <div id="countdownDisplay"></div>
@@ -84,47 +86,53 @@
 
   <!-- Game Section -->
   <div id="gameSection" class="section" style="position: relative;">
-    
-    <div id="game-container">
-      <div id="section-info">
-        <h1>Section 1 of <span id="totalSections"></span>: Guess the Frame</h1>
-      </div>
-      <div id="main-area">
-        <div id="image-container">
-          <img id="game-image" src="" alt="Game Image" data-answer="" data-answerImage="" onerror="console.error('Failed to load image:', this.src)">
-          <div id="curtain">
-            <h2>Get Ready!</h2>
-            <p>When the referee clicks Start, the image will be revealed and the timer will begin.</p>
-            <button id="startBtn">Start</button>
-          </div>
-        </div>
-        <div id="answer-text"></div>
-        <div id="answerSubmission">
-          <input type="text" id="answerInput" placeholder="Enter your answer">
-          <button id="submitAnswerBtn" onclick="submitAnswer()">Submit Answer</button>
-        </div>
-        <div id="controls">
-          <button id="prevBtn">Previous</button>
-          <button id="revealBtn" onclick="emitRevealAnswer()">Reveal Answer</button>
-          <button id="nextBtn">Next</button>
-        </div>
-        <div id="timer">20</div>
-        <div id="notification"></div>
-        <!-- This button will dynamically be set as either Next Section or Reveal Winner -->
-        <button id="nextSectionBtn" style="display:none;"></button>
-      </div>
+    <div id="game-container" style="display: flex;">
+      <!-- Left Column -->
       <div id="left-column">
-        <!-- Reintroduced referee card in game section -->
         <div id="referee-card">
-          <h5>The referee is</h5>
+          <h5>Referee</h5>
           <img id="referee-photo" class="referee-photo">
           <div id="referee-name" class="referee-name"></div>
         </div>
+        <div id="impNote">
+          <p>Select all correct answer.</p>
+        </div>
         <div id="submissionsContainer"></div>
       </div>
+
+      <!-- Center Column -->
+      <div id="center-column">
+        <div id="section-info">
+          <h1>Section 1 of <span id="totalSections"></span>: Guess the Frame</h1>
+        </div>
+        <div id="main-area">
+          <div id="image-container">
+            <img id="game-image" src="" alt="Game Image" data-answer="" data-answerImage="" onerror="console.error('Failed to load image:', this.src)">
+            <div id="curtain">
+              <h2>Get Ready!</h2>
+              <p>When the referee clicks Start, the image will be revealed and the timer will begin.</p>
+              <button id="startBtn">Start</button>
+            </div>
+          </div>
+          <div id="answer-text"></div>
+          <div id="answerSubmission">
+            <input type="text" id="answerInput" placeholder="Enter your answer">
+            <button id="submitAnswerBtn" onclick="submitAnswer()">Submit Answer</button>
+          </div>
+          <div id="controls">
+            <button id="prevBtn">Previous</button>
+            <button id="revealBtn" onclick="emitRevealAnswer()">Reveal Answer</button>
+            <button id="nextBtn">Next</button>
+          </div>
+          <div id="timer">20</div>
+          <div id="notification"></div>
+          <button id="nextSectionBtn" style="display:none;"></button>
+        </div>
+      </div>
+
+      <!-- Right Column -->
       <div id="right-column">
         <div id="players-container"></div>
-        <!-- Moved Spin Wheel Button for game section here (below players container) -->
         <button id="spinWheelGameBtn" style="display:none;" onclick="spinWheelGame()">Spin Wheel to Choose New Referee</button>
       </div>
     </div>
@@ -145,58 +153,58 @@
     window.lobbyPlayers = [];
     let players = [];
     
-    // Sections: each object holds a title and an array of rounds (images)
+    // Game sections (each with title and rounds)
     const sections = [
       {
         title: "Guess the Frame of Foreign Movies",
         images: [
-          { src: "frames/s1f1.jpg", answer: "S1A1", answerImage: "frames/s1a1.jpg" },
-          { src: "frames/s1f2.jpg", answer: "S1A2", answerImage: "frames/s1a2.jpg" },
-          { src: "frames/s1f3.jpg", answer: "S1A3", answerImage: "frames/s1a3.jpg" },
-          { src: "frames/s1f4.jpg", answer: "S1A4", answerImage: "frames/s1a4.jpg" },
-          { src: "frames/s1f5.jpg", answer: "S1A5", answerImage: "frames/s1a5.jpg" },
-          { src: "frames/s1f6.jpg", answer: "S1A6", answerImage: "frames/s1a6.jpg" },
-          { src: "frames/s1f7.jpg", answer: "S1A7", answerImage: "frames/s1a7.jpg" },
-          { src: "frames/s1f8.jpg", answer: "S1A8", answerImage: "frames/s1a8.jpg" }
+          { src: "frames/s1f1.webp", answer: "The Old Guard", answerImage: "frames/s1a1.webp" },
+          { src: "frames/s1f2.webp", answer: "Dead Poets Society", answerImage: "frames/s1a2.webp" },
+          { src: "frames/s1f3.webp", answer: "Captain America civil war", answerImage: "frames/s1a3.webp" },
+          { src: "frames/s1f4.webp", answer: "Gifted", answerImage: "frames/s1a4.webp" },
+          { src: "frames/s1f5.webp", answer: "Final Destination 5", answerImage: "frames/s1a5.webp" },
+          { src: "frames/s1f6.webp", answer: "killer of the flower moon", answerImage: "frames/s1a6.webp" },
+          { src: "frames/s1f7.webp", answer: "Little Women", answerImage: "frames/s1a7.webp" },
+          { src: "frames/s1f8.webp", answer: "Blade Runner 2049", answerImage: "frames/s1a8.webp" }
         ]
       },
       {
-        title: "Guess the Frame of Indian Movies",
+        title: "Guess the Movie from monolouges",
         images: [
-          { src: "frames/s2f1.jpg", answer: "S2A1", answerImage: "frames/s2a1.jpg" },
-          { src: "frames/s2f2.jpg", answer: "S2A2", answerImage: "frames/s2a2.jpg" },
-          { src: "frames/s2f3.jpg", answer: "S2A3", answerImage: "frames/s2a3.jpg" },
-          { src: "frames/s2f4.jpg", answer: "S2A4", answerImage: "frames/s2a4.jpg" },
-          { src: "frames/s2f5.jpg", answer: "S2A5", answerImage: "frames/s2a5.jpg" },
-          { src: "frames/s2f6.jpg", answer: "S2A6", answerImage: "frames/s2a6.jpg" },
-          { src: "frames/s2f7.jpg", answer: "S2A7", answerImage: "frames/s2a7.jpg" },
-          { src: "frames/s2f8.jpg", answer: "S2A8", answerImage: "frames/s2a8.jpg" }
+          { src: "frames/s2f1.webp", answer: "ChakDe India", answerImage: "frames/s2a1.webp" },
+          { src: "frames/s2f2.webp", answer: "Good Will Huntinig", answerImage: "frames/s2a2.webp" },
+          { src: "frames/s2f3.webp", answer: "Raees", answerImage: "frames/s2a3.webp" },
+          { src: "frames/s2f4.webp", answer: "Pulp Fiction", answerImage: "frames/s2a4.webp" },
+          { src: "frames/s2f5.webp", answer: "The Lunchbox", answerImage: "frames/s2a5.webp" },
+          { src: "frames/s2f6.webp", answer: "Dead Poets Society", answerImage: "frames/s2a6.webp" },
+          { src: "frames/s2f7.webp", answer: "Iron Man", answerImage: "frames/s2a7.webp" },
+          { src: "frames/s2f8.webp", answer: "Logan", answerImage: "frames/s2a8.webp" }
         ]
       },
       {
-        title: "Section 3",
+        title: "Guess the movie from references",
         images: [
-          { src: "frames/s3f1.jpg", answer: "S3A1", answerImage: "frames/s3a1.jpg" },
-          { src: "frames/s3f2.jpg", answer: "S3A2", answerImage: "frames/s3a2.jpg" },
-          { src: "frames/s3f3.jpg", answer: "S3A3", answerImage: "frames/s3a3.jpg" },
-          { src: "frames/s3f4.jpg", answer: "S3A4", answerImage: "frames/s3a4.jpg" },
-          { src: "frames/s3f5.jpg", answer: "S3A5", answerImage: "frames/s3a5.jpg" },
-          { src: "frames/s3f6.jpg", answer: "S3A6", answerImage: "frames/s3a6.jpg" },
-          { src: "frames/s3f7.jpg", answer: "S3A7", answerImage: "frames/s3a7.jpg" },
-          { src: "frames/s3f8.jpg", answer: "S3A8", answerImage: "frames/s3a8.jpg" }
+          { src: "frames/s3f1.webp", answer: "Aquaman And the Lost Kingdom", answerImage: "frames/s3a1.webp" },
+          { src: "frames/s3f2.webp", answer: "Captain America Brave new world", answerImage: "frames/s3a2.webp" },
+          { src: "frames/s3f3.webp", answer: "Madam Web", answerImage: "frames/s3a3.webp" },
+          { src: "frames/s3f4.webp", answer: "Deadpool & wolverine", answerImage: "frames/s3a4.webp" },
+          { src: "frames/s3f5.webp", answer: "Dr strange in the multiverse of madness", answerImage: "frames/s3a5.webp" },
+          { src: "frames/s3f6.webp", answer: "Spider-man No way home", answerImage: "frames/s3a6.webp" },
+          { src: "frames/s3f7.webp", answer: "Thor love and thunder", answerImage: "frames/s3a7.webp" },
+          { src: "frames/s3f8.webp", answer: "Sazam!", answerImage: "frames/s3a8.webp" }
         ]
       },
       {
-        title: "Section 4",
+        title: "Guess the movie from poor discription",
         images: [
-          { src: "frames/s4f1.jpg", answer: "S4A1", answerImage: "frames/s4a1.jpg" },
-          { src: "frames/s4f2.jpg", answer: "S4A2", answerImage: "frames/s4a2.jpg" },
-          { src: "frames/s4f3.jpg", answer: "S4A3", answerImage: "frames/s4a3.jpg" },
-          { src: "frames/s4f4.jpg", answer: "S4A4", answerImage: "frames/s4a4.jpg" },
-          { src: "frames/s4f5.jpg", answer: "S4A5", answerImage: "frames/s4a5.jpg" },
-          { src: "frames/s4f6.jpg", answer: "S4A6", answerImage: "frames/s4a6.jpg" },
-          { src: "frames/s4f7.jpg", answer: "S4A7", answerImage: "frames/s4a7.jpg" },
-          { src: "frames/s4f8.jpg", answer: "S4A8", answerImage: "frames/s4a8.jpg" }
+          { src: "frames/s4f1.webp", answer: "S4A1", answerImage: "frames/s4a1.webp" },
+          { src: "frames/s4f2.webp", answer: "S4A2", answerImage: "frames/s4a2.webp" },
+          { src: "frames/s4f3.webp", answer: "S4A3", answerImage: "frames/s4a3.webp" },
+          { src: "frames/s4f4.webp", answer: "S4A4", answerImage: "frames/s4a4.webp" },
+          { src: "frames/s4f5.webp", answer: "S4A5", answerImage: "frames/s4a5.webp" },
+          { src: "frames/s4f6.webp", answer: "S4A6", answerImage: "frames/s4a6.webp" },
+          { src: "frames/s4f7.webp", answer: "S4A7", answerImage: "frames/s4a7.webp" },
+          { src: "frames/s4f8.webp", answer: "S4A8", answerImage: "frames/s4a8.webp" }
         ]
       }
     ];
@@ -210,6 +218,12 @@
     socket.on('connect', () => {
       localSocketId = socket.id;
       console.log("Connected with ID:", localSocketId);
+    });
+    
+    /******** Beforeunload Warning ********/
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "Are you sure you want to leave? Your game progress might be lost.";
     });
     
     /******** Name and Avatar Entry ********/
@@ -234,15 +248,27 @@
     function createRoom() {
       socket.emit('createRoom', { name: playerName, avatar: selectedAvatar });
       document.getElementById('roomControls').style.display = 'none';
+      // currentRoom will be set when the server responds via roomCreated.
     }
     
     function joinRoom() {
       const roomId = document.getElementById('roomId').value.trim();
       if (!roomId) return;
-      socket.emit('joinRoom', { name: playerName, roomId: roomId, avatar: selectedAvatar });
-      currentRoom = roomId;
-      document.getElementById('roomControls').style.display = 'none';
-      document.getElementById('roomIdDisplay').textContent = roomId;
+      
+      // Use sessionStorage so that rejoin is only triggered on page reload
+      const storedRoom = sessionStorage.getItem("currentRoom");
+      
+      if (storedRoom && storedRoom === roomId) {
+        // Ask server if rejoining is available.
+        socket.emit("checkRoomStatus", { roomId: roomId, name: playerName });
+      } else {
+        // Standard join flow.
+        socket.emit('joinRoom', { name: playerName, roomId: roomId, avatar: selectedAvatar });
+        currentRoom = roomId;
+        sessionStorage.setItem("currentRoom", roomId);
+        document.getElementById('roomControls').style.display = 'none';
+        document.getElementById('roomIdDisplay').textContent = roomId;
+      }
     }
     
     function copyRoomId() {
@@ -256,7 +282,6 @@
       document.getElementById('lobbyInfo').style.display = 'block';
     }
     
-    // Updated updateLobbyPlayers to display player cards with role labels.
     function updateLobbyPlayers(list) {
       window.lobbyPlayers = list;
       let html = '<h3>Players in Room:</h3>';
@@ -302,6 +327,7 @@
       showLobby();
       document.getElementById('startGameBtn').style.display = 'block';
       isHost = true;
+      sessionStorage.setItem("currentRoom", roomId);
     });
     
     socket.on('playerJoined', (list) => { updateLobbyPlayers(list); });
@@ -315,13 +341,12 @@
       initGame();
     });
     
-    // When referee is set, update lobby players and referee card in game section.
     socket.on('setReferee', data => {
       currentRefereeId = data.refereeId;
       updateControlAvailability();
       updateLobbyPlayers(window.lobbyPlayers);
       const ref = window.lobbyPlayers.find(p => p.id === currentRefereeId);
-      if(ref){
+      if (ref) {
         document.getElementById("referee-photo").src = ref.avatar;
         document.getElementById("referee-name").textContent = ref.name;
       }
@@ -346,22 +371,55 @@
     
     socket.on("nextSection", () => {
       nextSection();
-      // At the end of the section, if the current client is the referee,
-      // show the spin wheel button for new referee selection.
-      if(localSocketId === currentRefereeId){
+      if (localSocketId === currentRefereeId) {
         document.getElementById("spinWheelGameBtn").style.display = "block";
       }
     });
     
-    // Updated: show the spin button only when the section has ended (last image)
+    // New: Listen for rejoinAvailable response from the server.
+    socket.on("rejoinAvailable", (data) => {
+      if (data.canRejoin) {
+        let overlay = document.createElement("div");
+        overlay.id = "rejoinOverlay";
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+        overlay.style.color = "#fff";
+        overlay.style.display = "flex";
+        overlay.style.flexDirection = "column";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "1000";
+        overlay.innerHTML = `
+          <p>You were previously in this game. Do you want to rejoin?</p>
+          <button id="confirmRejoinBtn" style="padding:10px 20px; font-size:16px;">Rejoin Game</button>
+        `;
+        document.body.appendChild(overlay);
+        
+        document.getElementById("confirmRejoinBtn").addEventListener("click", () => {
+          socket.emit("rejoinGame", {
+            name: playerName,
+            roomId: data.roomId,
+            avatar: selectedAvatar
+          });
+          overlay.remove();
+        });
+      } else {
+        alert("The game is already in progress and you cannot rejoin.");
+      }
+    });
+    
+    // Function to update control availability based on referee and image index.
     function updateControlAvailability() {
       const controlIds = ["startBtn", "prevBtn", "nextBtn", "revealBtn"];
       controlIds.forEach(id => {
         document.getElementById(id).style.display = (localSocketId === currentRefereeId) ? "block" : "none";
       });
-      // Only show the spin wheel button in the game section if:
-      // 1. The current client is the referee.
-      // 2. The current image is the last in the section.
+      
+      // Show spin wheel in game section only if current image is the last one and client is referee.
       const sec = sections[currentSectionIndex];
       if (localSocketId === currentRefereeId && currentImageIndex >= sec.images.length - 1) {
         document.getElementById("spinWheelGameBtn").style.display = "block";
@@ -369,6 +427,12 @@
         document.getElementById("spinWheelGameBtn").style.display = "none";
       }
       
+      if (localSocketId === currentRefereeId) {
+        document.getElementById("impNote").style.display = "block";
+      } else {
+        document.getElementById("impNote").style.display = "none";
+      }
+
       let nsBtn = document.getElementById("nextSectionBtn");
       if (currentImageIndex >= sec.images.length - 1 && localSocketId === currentRefereeId) {
         nsBtn.style.display = "block";
@@ -386,6 +450,15 @@
         }
       } else {
         nsBtn.style.display = "none";
+      }
+    }
+    
+    // Navigation functions (prevImage, nextImage, nextSection)
+    function prevImage() {
+      if (currentImageIndex > 0) {
+        currentImageIndex--;
+        showImage();
+        prepareForNewImage();
       }
     }
     
@@ -545,16 +618,14 @@
       if (localSocketId === currentRefereeId) socket.emit("startImage");
     });
     
-    /******** Spin Wheel for Random Referee Selection ********/
     function spinWheel() {
-      // Hide the spin wheel button immediately
       document.getElementById("spinWheelBtn").style.display = "none";
       const playerCards = document.querySelectorAll('#playersList .player-card');
       if (playerCards.length === 0) return;
       
       let activeIndex = 0;
-      const intervalSpeed = 100; // in ms
-      const spinDuration = 3000; // total spin duration in ms
+      const intervalSpeed = 100;
+      const spinDuration = 3000;
       
       function updateActive() {
         playerCards.forEach(card => card.classList.remove('active-player'));
@@ -577,7 +648,6 @@
       }, spinDuration);
     }
     
-    // Spin wheel function for game section referee selection
     function spinWheelGame() {
       document.getElementById("spinWheelGameBtn").style.display = "none";
       const playerCards = document.querySelectorAll('#players-container .player-card');
@@ -615,7 +685,7 @@
       const winners = sortedPlayers.filter(player => player.score === highestScore);
       winners.forEach(player => {
         player.winCount++;
-        localStorage.setItem("winCount_" + player.name, player.winCount);
+        sessionStorage.setItem("winCount_" + player.name, player.winCount);
       });
       let leaderboardHTML = "<h2>Leaderboard</h2>";
       leaderboardHTML += "<table>";
@@ -637,10 +707,22 @@
       }
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
       document.getElementById("game-container").innerHTML =
-        `<div id="leaderboard">
+        `<div id="leaderboard-wrapper">
+        <div id="leaderboard">
           ${winnerMessage}
           ${leaderboardHTML}
-        </div>`;
+        </div>
+    <div id="extra-content">
+      <div id="payment">
+        <h3 style="margin-bottom: 10px;">Buy me a cup of coffee</h3>
+        <img src="qrs/payment.png" alt="Your Photo" style="width: 15vw; height: 15vw; border-radius: 5%; margin-bottom: 10px;">
+      </div>
+      <div id="submit" style="width: 20vw; height: 20vw; background: #f0f0f0; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+        <h3 style="margin-bottom: 10px;">Send your frames</h3>
+        <img src="qrs/subqr.jpg" alt="Submit Icon" style="width: 15vw; height: 15vw; border-radius: 5%; margin-bottom: 10px;">
+      </div>
+      </div>
+    </div>`;
     }
     
     function initGame() {
@@ -675,8 +757,6 @@
         nameEntry.classList.add('fade-in');
       }, 500);
     }
-
-    
   </script>
 </body>
 </html>
